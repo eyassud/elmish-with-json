@@ -1,0 +1,12 @@
+[
+    {
+        "name": "Apples",
+        "price": 4.99,
+        "inStock": true
+    },
+    {
+        "name": "Oranges",
+        "price": 3.99,
+        "inStock": false
+    }
+]
