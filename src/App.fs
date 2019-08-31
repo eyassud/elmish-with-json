@@ -20,11 +20,12 @@ let update (msg: Msg) (state: State) =
       let nextState = { state with Products = InProgress }
       let loadProducts =
         async {
+          // simulate delay
           do! Async.Sleep 1500
           let! (statusCode, products) = Http.get "/products.json"
           if statusCode = 200
           then return LoadProducts (Finished (Ok products))
-          else return LoadProducts (Finished (Error "Could not load the product's information"))
+          else return LoadProducts (Finished (Error "Could not load the products"))
         }
 
       nextState, Cmd.fromAsync loadProducts
@@ -37,8 +38,14 @@ let render (state: State) (dispatch: Msg -> unit) =
   match state.Products with
   | HasNotStartedYet -> Html.none
   | InProgress -> Html.h1 "Loading..."
-  | Resolved (Error errorMsg) -> Html.h1 errorMsg
-  | Resolved (Ok products) -> Html.pre products
+  | Resolved (Error errorMsg) ->
+      Html.h1 [
+        prop.style [ style.color.red ]
+        prop.text errorMsg
+      ]
+
+  | Resolved (Ok products) ->
+      Html.pre products
 
 Program.mkProgram init update render
 |> Program.withReactSynchronous "elmish-app"
