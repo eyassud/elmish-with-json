@@ -11,6 +11,7 @@ type State =
 type Msg =
   | LoadProducts of AsyncOperationEvent<Result<string, string>>
 
+
 let init() =
   { Products = HasNotStartedYet }, Cmd.ofMsg (LoadProducts Started)
 
@@ -22,7 +23,7 @@ let update (msg: Msg) (state: State) =
         async {
           // simulate delay
           do! Async.Sleep 1500
-          let! (statusCode, products) = Http.get "/products.json"
+          let! (statusCode, products) = Http.get "/store.json"
           if statusCode = 200
           then return LoadProducts (Finished (Ok products))
           else return LoadProducts (Finished (Error "Could not load the products"))
