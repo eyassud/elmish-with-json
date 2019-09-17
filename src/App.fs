@@ -18,17 +18,17 @@ let update (msg: Msg) (state: State) =
   match msg with
   | LoadStoreInfo Started ->
       let nextState = { state with StoreInfo = InProgress }
-      let loadProducts =
+      let loadStoreInfo =
         async {
           // simulate delay
           do! Async.Sleep 1500
-          let! (statusCode, products) = Http.get "/store.json"
+          let! (statusCode, storeInfo) = Http.get "/store.json"
           if statusCode = 200
-          then return LoadStoreInfo (Finished (Ok products))
-          else return LoadStoreInfo (Finished (Error "Could not load the products"))
+          then return LoadStoreInfo (Finished (Ok storeInfo))
+          else return LoadStoreInfo (Finished (Error "Could not load the store information"))
         }
 
-      nextState, Cmd.fromAsync loadProducts
+      nextState, Cmd.fromAsync loadStoreInfo
 
   | LoadStoreInfo (Finished result) ->
       let nextState = { state with StoreInfo = Resolved result }
