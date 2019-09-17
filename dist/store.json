@@ -1,7 +1,7 @@
 {
     "name": "Best Coffee Ever",
     "since": 2010,
-    "open": [
+    "daysOpen": [
         "Monday",
         "Tuesday",
         "Wednesday"
