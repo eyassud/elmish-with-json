@@ -6,36 +6,36 @@ open Fable.SimpleHttp
 open Feliz
 
 type State =
-  { Products: Deferred<Result<string, string>> }
+  { StoreInfo: Deferred<Result<string, string>> }
 
 type Msg =
-  | LoadProducts of AsyncOperationEvent<Result<string, string>>
+  | LoadStoreInfo of AsyncOperationEvent<Result<string, string>>
 
 let init() =
-  { Products = HasNotStartedYet }, Cmd.ofMsg (LoadProducts Started)
+  { StoreInfo = HasNotStartedYet }, Cmd.ofMsg (LoadStoreInfo Started)
 
 let update (msg: Msg) (state: State) =
   match msg with
-  | LoadProducts Started ->
-      let nextState = { state with Products = InProgress }
+  | LoadStoreInfo Started ->
+      let nextState = { state with StoreInfo = InProgress }
       let loadProducts =
         async {
           // simulate delay
           do! Async.Sleep 1500
           let! (statusCode, products) = Http.get "/store.json"
           if statusCode = 200
-          then return LoadProducts (Finished (Ok products))
-          else return LoadProducts (Finished (Error "Could not load the products"))
+          then return LoadStoreInfo (Finished (Ok products))
+          else return LoadStoreInfo (Finished (Error "Could not load the products"))
         }
 
       nextState, Cmd.fromAsync loadProducts
 
-  | LoadProducts (Finished result) ->
-      let nextState = { state with Products = Resolved result }
+  | LoadStoreInfo (Finished result) ->
+      let nextState = { state with StoreInfo = Resolved result }
       nextState, Cmd.none
 
 let render (state: State) (dispatch: Msg -> unit) =
-  match state.Products with
+  match state.StoreInfo with
   | HasNotStartedYet -> Html.none
   | InProgress -> Html.h1 "Loading..."
   | Resolved (Error errorMsg) ->
