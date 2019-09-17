@@ -11,7 +11,6 @@ type State =
 type Msg =
   | LoadProducts of AsyncOperationEvent<Result<string, string>>
 
-
 let init() =
   { Products = HasNotStartedYet }, Cmd.ofMsg (LoadProducts Started)
 
